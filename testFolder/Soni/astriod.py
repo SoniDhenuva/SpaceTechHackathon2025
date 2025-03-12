@@ -9,12 +9,12 @@ from datetime import datetime
 # start_date = "2025-03-01"
 start_date = input("Enter Start Date (yyyy-mm-dd): ")
 # end_date = "2025-03-02"
-end_date = datetime.today().strftime('%Y-%m-%d')
+present = datetime.today().strftime('%Y-%m-%d')
 
 api_key = "SZmGczOnby9lWoef9BxlmJlqhByTqGluLeFdlJjm"  # Replace with your actual API key if needed
 
 # Define the NeoWs API endpoint
-url = f"https://api.nasa.gov/neo/rest/v1/feed?start_date={start_date}&end_date={end_date}&api_key={api_key}"
+url = f"https://api.nasa.gov/neo/rest/v1/feed?start_date={start_date}&end_date={present}&api_key={api_key}"
 
 # Send a GET request to the API
 response = requests.get(url)

@@ -1,50 +1,155 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+/* Resetting some default styles */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
+/* Body Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Header Styles */
 header {
-    background-color: #333;
+    background-color: #2d3e50;
     color: white;
-    padding: 10px 0;
-    text-align: center;
+    padding: 1rem 0;
 }
 
-nav ul {
+header .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    font-size: 2rem;
+}
+
+header nav ul {
     list-style-type: none;
-    padding: 0;
 }
 
-nav ul li {
+header nav ul li {
     display: inline;
     margin-right: 20px;
 }
 
-nav ul li a {
-    color: white;
+header nav ul li a {
     text-decoration: none;
-    font-size: 18px;
+    color: white;
+    font-weight: bold;
 }
 
-nav ul li a:hover {
-    text-decoration: underline;
+header nav ul li a:hover {
+    color: #f39c12;
 }
 
-section {
-    padding: 20px;
-    margin: 10px;
-    background-color: white;
+/* Section Styles */
+main {
+    padding: 2rem 0;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section {
+    background-color: #fff;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
     border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+.section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.section p {
+    font-size: 1rem;
+}
+
+/* Dashboard & Cards */
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.card {
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.card p {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.card .btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.card .btn:hover {
+    background-color: #45a049;
+}
+
+/* Footer Styles */
 footer {
-    background-color: #333;
+    background-color: #2d3e50;
     color: white;
     text-align: center;
-    padding: 10px 0;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
+    padding: 1rem;
+}
+
+footer p {
+    font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    header .container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    header nav ul {
+        margin-top: 1rem;
+    }
+
+    header nav ul li {
+        display: block;
+        margin: 10px 0;
+    }
+
+    main {
+        padding: 1rem;
+    }
+
+    .section {
+        padding: 1rem;
+    }
+
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
 }

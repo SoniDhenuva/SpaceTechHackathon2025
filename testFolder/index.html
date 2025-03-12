@@ -1,40 +1,65 @@
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Website</title>
+    <title>SpaceTechHackathon2025</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>Welcome to My Simple Website</h1>
-        <nav>
-            <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
+        <div class="container">
+            <h1>SpaceTechHackathon2025</h1>
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
 
-    <section id="home">
-        <h2>Displaying Real Time ISS Data</h2>
-        <p>This is the home section of the website.</p>
-    </section>
+    <main>
+        <section id="home" class="section">
+            <h2>Mission Dashboard</h2>
+            <p>Monitor mission-critical data, predict mission success, and assist with mission planning.</p>
+            
+            <!-- Dashboard Cards -->
+            <div class="dashboard">
+                <div class="card">
+                    <h3>ISS Real-Time Data</h3>
+                    <p>Monitor live data from the International Space Station (ISS) for mission status.</p>
+                    <button>View Data</button>
+                </div>
+                
+                <div class="card">
+                    <h3>Mission Prediction</h3>
+                    <p>Analyze mission success probabilities based on current parameters.</p>
+                    <button>Run Prediction</button>
+                </div>
 
-    <section id="about">
-        <h2>About</h2>
-        <p>Learn more about us here.</p>
-    </section>
+                <div class="card">
+                    <h3>Mission Planning</h3>
+                    <p>Plan your mission steps, resources, and optimize tasks for success.</p>
+                    <button>Start Planning</button>
+                </div>
+            </div>
+        </section>
 
-    <section id="contact">
-        <h2>Contact</h2>
-        <p>If you want to reach us, feel free to contact us!</p>
-    </section>
+        <section id="about" class="section">
+            <h2>About SpaceTechHackathon2025</h2>
+            <p>Learn more about SpaceTechHackathon2025 and the exciting projects happening here.</p>
+        </section>
+
+        <section id="contact" class="section">
+            <h2>Contact</h2>
+            <p>If you want to reach us, feel free to contact us!</p>
+        </section>
+    </main>
 
     <footer>
-        <p>&copy; 2025 Simple Website</p>
+        <p>&copy; 2025 SpaceTechHackathon2025 | All Rights Reserved</p>
     </footer>
 </body>
 </html>
