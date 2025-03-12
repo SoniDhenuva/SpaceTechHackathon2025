@@ -1,18 +1,16 @@
 import requests
 
 import datetime
+from datetime import datetime
 
-# Get the current date and time
-current_timestamp = datetime.datetime.now()
-
-
-# Print the timestamp
-print("Current Timestamp:", current_timestamp)
 
 # Define the start and end date for the query
 
-start_date = "2025-03-01"
-end_date = "2025-03-02"
+# start_date = "2025-03-01"
+start_date = input("Enter Start Date (yyyy-mm-dd): ")
+# end_date = "2025-03-02"
+end_date = datetime.today().strftime('%Y-%m-%d')
+
 api_key = "SZmGczOnby9lWoef9BxlmJlqhByTqGluLeFdlJjm"  # Replace with your actual API key if needed
 
 # Define the NeoWs API endpoint
@@ -64,7 +62,9 @@ if response.status_code == 200:
 
     # Print out the nearest 3 asteroids
     if nearest_asteroids:
+        print()
         print("Nearest 3 Asteroids to Earth (in kilometers):")
+        print()
         for asteroid in nearest_asteroids:
             print(f"Name: {asteroid['name']}")
             print(f"Miss Distance (km): {asteroid['miss_distance_km']}")
@@ -76,7 +76,7 @@ if response.status_code == 200:
         # Print out the hazardous asteroids below the nearest 3
         if hazardous_asteroids:
             print("________________________________________________________")
-            
+            print()
             print("Hazardous Asteroids (in kilometers):")
             for asteroid in hazardous_asteroids:
                 print(f"Name: {asteroid['name']}")
