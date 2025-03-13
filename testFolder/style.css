@@ -153,3 +153,26 @@ footer p {
         grid-template-columns: 1fr;
     }
 }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #252525;
+    color: white;
+}
+th, td {
+    border: 1px solid #00bcd4;
+    padding: 10px;
+    text-align: center;
+}
+th {
+    background-color: #00bcd4;
+    color: black;
+}
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #1e1e1e;
+    margin-top: 20px;
+}

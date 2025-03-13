@@ -24,27 +24,46 @@
         <section id="home" class="section">
             <h2>Mission Dashboard</h2>
             <p>Monitor mission-critical data, predict mission success, and assist with mission planning.</p>
-            
-            <!-- Dashboard Cards -->
-            <div class="dashboard">
-                <div class="card">
-                    <h3>ISS Real-Time Data</h3>
-                    <p>Monitor live data from the International Space Station (ISS) for mission status.</p>
-                    <button>View Data</button>
-                </div>
-                
-                <div class="card">
-                    <h3>Mission Prediction</h3>
-                    <p>Analyze mission success probabilities based on current parameters.</p>
-                    <button>Run Prediction</button>
-                </div>
-
-                <div class="card">
-                    <h3>Mission Planning</h3>
-                    <p>Plan your mission steps, resources, and optimize tasks for success.</p>
-                    <button>Start Planning</button>
-                </div>
+        </section>
+        <!-- Dashboard Cards -->
+        <div class="dashboard">
+            <div class="card">
+                <h3>ISS Real-Time Data</h3>
+                <p>Monitor live data from the International Space Station (ISS) for mission status.</p>
+                <button>View Data</button>
             </div>
+            
+            <div class="card">
+                <h3>Mission Prediction</h3>
+                <p>Analyze mission success probabilities based on current parameters.</p>
+                <button>Run Prediction</button>
+            </div>
+
+            <div class="card">
+                <h3>Mission Planning</h3>
+                <p>Plan your mission steps, resources, and optimize tasks for success.</p>
+                <button>Start Planning</button>
+            </div>
+        </div>
+
+        <section id="asteroids-nearby" class="section">
+            <h2>Asteroids Nearby</h2>
+            <p>Tracking near-Earth asteroids for potential hazards and close approaches.</p>
+            
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Miss Distance (km)</th>
+                        <th>Approach Date</th>
+                        <th>Velocity (km/s)</th>
+                        <th>Hazardous</th>
+                    </tr>
+                </thead>
+                <tbody id="asteroid-data">
+                    <!-- Data will be inserted here dynamically -->
+                </tbody>
+            </table>
         </section>
 
         <section id="about" class="section">
@@ -61,5 +80,37 @@
     <footer>
         <p>&copy; 2025 SpaceTechHackathon2025 | All Rights Reserved</p>
     </footer>
+
+    <script>
+        async function fetchAsteroidData() {
+            const API_KEY = "SZmGczOnby9lWoef9BxlmJlqhByTqGluLeFdlJjm";
+            const today = new Date().toISOString().split('T')[0];
+            const url = `https://api.nasa.gov/neo/rest/v1/feed?start_date=${today}&end_date=${today}&api_key=${API_KEY}`;
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                const neos = data.near_earth_objects[today] || [];
+                const tableBody = document.getElementById("asteroid-data");
+                tableBody.innerHTML = "";
+                
+                neos.forEach(asteroid => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${asteroid.name}</td>
+                        <td>${parseFloat(asteroid.close_approach_data[0].miss_distance.kilometers).toFixed(2)}</td>
+                        <td>${asteroid.close_approach_data[0].close_approach_date_full}</td>
+                        <td>${parseFloat(asteroid.close_approach_data[0].relative_velocity.kilometers_per_second).toFixed(2)}</td>
+                        <td>${asteroid.is_potentially_hazardous_asteroid ? "⚠️ Yes" : "No"}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error("Error fetching asteroid data:", error);
+            }
+        }
+        
+        fetchAsteroidData();
+    </script>
 </body>
 </html>
