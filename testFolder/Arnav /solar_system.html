@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Solar System Simulation</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: black;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        canvas {
+            border: 1px solid #333;
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.1);
+        }
+        #info-panel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(50, 50, 50, 0.95);
+            padding: 20px;
+            border: 2px solid white;
+            color: white;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            z-index: 1000;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        .button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #6464ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 1000;
+            transition: background 0.3s;
+        }
+        .button:hover {
+            background: #8282ff;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        th {
+            background: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="solarSystem"></canvas>
+    <button id="freezeButton" class="button">Freeze</button>
+    <div id="info-panel"></div>
+
+    <script>
+        const canvas = document.getElementById('solarSystem');
+        const ctx = canvas.getContext('2d');
+        const freezeButton = document.getElementById('freezeButton');
+        const infoPanel = document.getElementById('info-panel');
+
+        // Set canvas size
+        canvas.width = 1500;
+        canvas.height = 1200;
+
+        // Colors
+        const colors = {
+            BLACK: '#000000',
+            WHITE: '#FFFFFF',
+            YELLOW: '#FFFF00',
+            GRAY: '#A9A9A9',
+            LIGHT_GRAY: '#C0C0C0',
+            DODGER_BLUE: '#1E90FF',
+            TOMATO: '#FF6347',
+            GOLD: '#FFA500',
+            LIGHT_SKY_BLUE: '#87CEFA',
+            STEEL_BLUE: '#4682B4',
+            MIDNIGHT_BLUE: '#191970'
+        };
+
+        // Planet data: [name, color, radius, distance, speed, real_radius, mass, gravity, temperature]
+        const planets = [
+            ["Sun", colors.YELLOW, 30, 0, 0, 696340, 1988500000, 274, 5505],
+            ["Mercury", colors.GRAY, 6, 60, 4, 2439.7, 0.33, 3.7, 167],
+            ["Venus", colors.LIGHT_GRAY, 10, 100, 3.5, 6051.8, 4.87, 8.9, 464],
+            ["Earth", colors.DODGER_BLUE, 12, 150, 2.5, 6371, 5.97, 9.8, 15],
+            ["Mars", colors.TOMATO, 8, 200, 2, 3389.5, 0.642, 3.7, -65],
+            ["Jupiter", colors.GOLD, 35, 300, 1.8, 69911, 1898, 23.1, -110],
+            ["Saturn", colors.LIGHT_SKY_BLUE, 30, 400, 1.4, 58232, 568, 9.0, -140],
+            ["Uranus", colors.STEEL_BLUE, 25, 500, 1.2, 25362, 86.8, 8.7, -195],
+            ["Neptune", colors.MIDNIGHT_BLUE, 24, 600, 1, 24622, 102, 11.0, -200]
+        ];
+
+        let angle = 0;
+        let frozen = false;
+        let selectedPlanets = [];
+        let displayingInfo = false;
+
+        function drawOrbit(planet) {
+            if (planet[3] === 0) return; // Don't draw orbit for sun
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = 1;
+            ctx.arc(canvas.width/2, canvas.height/2, planet[3], 0, Math.PI * 2);
+            ctx.stroke();
+        }
+
+        function drawPlanet(planet, x, y, isSelected = false) {
+            // Draw orbit
+            drawOrbit(planet);
+
+            // Draw planet
+            ctx.beginPath();
+            ctx.arc(x, y, planet[2], 0, Math.PI * 2);
+            ctx.fillStyle = planet[1];
+            ctx.fill();
+            ctx.strokeStyle = colors.WHITE;
+            ctx.stroke();
+
+            // Draw glow effect for sun
+            if (planet[0] === "Sun") {
+                ctx.beginPath();
+                ctx.arc(x, y, planet[2] + 5, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 0, 0.2)';
+                ctx.fill();
+            }
+
+            if (isSelected) {
+                ctx.beginPath();
+                ctx.arc(x, y, planet[2] + 3, 0, Math.PI * 2);
+                ctx.strokeStyle = colors.WHITE;
+                ctx.stroke();
+            }
+
+            // Draw planet name
+            ctx.fillStyle = colors.WHITE;
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(planet[0], x, y + planet[2] + 20);
+        }
+
+        function displayPlanetComparison(planet1, planet2) {
+            const panel = document.getElementById('info-panel');
+            panel.style.display = 'block';
+            
+            let html = `
+                <h2 style="text-align: center; margin-bottom: 20px;">Comparing ${planet1[0]} and ${planet2[0]}</h2>
+                <table>
+                    <tr>
+                        <th>Property</th>
+                        <th>${planet1[0]}</th>
+                        <th>${planet2[0]}</th>
+                    </tr>
+                    <tr>
+                        <td>Radius (km)</td>
+                        <td>${planet1[5].toLocaleString()}</td>
+                        <td>${planet2[5].toLocaleString()}</td>
+                    </tr>
+                    <tr>
+                        <td>Mass (10^24 kg)</td>
+                        <td>${planet1[6].toLocaleString()}</td>
+                        <td>${planet2[6].toLocaleString()}</td>
+                    </tr>
+                    <tr>
+                        <td>Surface Gravity (m/s²)</td>
+                        <td>${planet1[7]}</td>
+                        <td>${planet2[7]}</td>
+                    </tr>
+                    <tr>
+                        <td>Avg. Temperature (°C)</td>
+                        <td>${planet1[8]}</td>
+                        <td>${planet2[8]}</td>
+                    </tr>
+                </table>
+                <p style="text-align: center; margin-top: 20px;">
+                    Size ratio: ${planet1[0]} is ${(planet1[5]/planet2[5]).toFixed(2)}x ${planet2[0]}
+                </p>
+                <p style="text-align: center;">
+                    Mass ratio: ${planet1[0]} is ${(planet1[6]/planet2[6]).toFixed(2)}x ${planet2[0]}
+                </p>
+                <p style="text-align: center; color: #aaa;">
+                    Click anywhere to close this panel
+                </p>
+            `;
+            
+            panel.innerHTML = html;
+        }
+
+        function animate() {
+            if (!frozen) {
+                ctx.fillStyle = colors.BLACK;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Draw sun
+                drawPlanet(planets[0], canvas.width/2, canvas.height/2);
+
+                // Draw planets
+                for (let i = 1; i < planets.length; i++) {
+                    const planet = planets[i];
+                    const x = canvas.width/2 + Math.cos(angle * planet[4]) * planet[3];
+                    const y = canvas.height/2 + Math.sin(angle * planet[4]) * planet[3];
+                    drawPlanet(planet, x, y, selectedPlanets.includes(planet));
+                }
+
+                // Draw instruction text
+                if (selectedPlanets.length === 0) {
+                    ctx.fillStyle = colors.WHITE;
+                    ctx.font = '16px Arial';
+                    ctx.textAlign = 'left';
+                    ctx.fillText('Click on two planets to compare them', 10, 30);
+                } else if (selectedPlanets.length === 1) {
+                    ctx.fillStyle = colors.WHITE;
+                    ctx.font = '16px Arial';
+                    ctx.textAlign = 'left';
+                    ctx.fillText(`Selected: ${selectedPlanets[0][0]}. Click another planet to compare.`, 10, 30);
+                }
+
+                angle += 0.003; // Slower rotation for better visibility
+                requestAnimationFrame(animate);
+            }
+        }
+
+        function isPointInCircle(point, center, radius) {
+            const dx = point.x - center.x;
+            const dy = point.y - center.y;
+            return dx * dx + dy * dy <= radius * radius;
+        }
+
+        canvas.addEventListener('click', (e) => {
+            if (displayingInfo) {
+                displayingInfo = false;
+                infoPanel.style.display = 'none';
+                selectedPlanets = [];
+                return;
+            }
+
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // Check sun
+            if (isPointInCircle({x, y}, {x: canvas.width/2, y: canvas.height/2}, planets[0][2])) {
+                handlePlanetSelection(planets[0]);
+                return;
+            }
+
+            // Check other planets
+            for (let i = 1; i < planets.length; i++) {
+                const planet = planets[i];
+                const planetX = canvas.width/2 + Math.cos(angle * planet[4]) * planet[3];
+                const planetY = canvas.height/2 + Math.sin(angle * planet[4]) * planet[3];
+                
+                if (isPointInCircle({x, y}, {x: planetX, y: planetY}, planet[2])) {
+                    handlePlanetSelection(planet);
+                    return;
+                }
+            }
+        });
+
+        function handlePlanetSelection(planet) {
+            if (selectedPlanets.includes(planet)) {
+                selectedPlanets = selectedPlanets.filter(p => p !== planet);
+            } else if (selectedPlanets.length < 2) {
+                selectedPlanets.push(planet);
+                if (selectedPlanets.length === 2) {
+                    displayingInfo = true;
+                    displayPlanetComparison(selectedPlanets[0], selectedPlanets[1]);
+                }
+            }
+        }
+
+        freezeButton.addEventListener('click', () => {
+            frozen = !frozen;
+            freezeButton.textContent = frozen ? 'Unfreeze' : 'Freeze';
+            if (!frozen) {
+                animate();
+            }
+        });
+
+        // Start animation
+        animate();
+    </script>
+</body>
+</html>
